@@ -8,7 +8,6 @@ include { get_mzmls } from "./workflows/get_mzmls"
 include { skyline_import } from "./workflows/skyline_import"
 include { skyline_reports } from "./workflows/skyline_run_reports"
 include { panorama_upload_results } from "./workflows/panorama_upload"
-include { panorama_upload_mzmls } from "./workflows/panorama_upload"
 
 // modules
 include { SAVE_RUN_DETAILS } from "./modules/save_run_details"
