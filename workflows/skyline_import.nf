@@ -1,5 +1,4 @@
 // Modules
-include { SKYLINE_ADD_LIB } from "../modules/skyline"
 include { SKYLINE_IMPORT_MZML } from "../modules/skyline"
 include { SKYLINE_MERGE_RESULTS } from "../modules/skyline"
 
