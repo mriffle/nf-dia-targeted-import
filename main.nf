@@ -4,7 +4,7 @@ nextflow.enable.dsl = 2
 
 // Sub workflows
 include { get_input_files } from "./workflows/get_input_files"
-include { get_mzmls } from "./workflows/get_mzmls"
+include { get_spectra_files } from "./workflows/get_spectra_files"
 include { skyline_import } from "./workflows/skyline_import"
 include { skyline_reports } from "./workflows/skyline_run_reports"
 include { panorama_upload_results } from "./workflows/panorama_upload"
@@ -24,20 +24,26 @@ workflow {
     run_details_file = SAVE_RUN_DETAILS.out.run_details
 
     get_input_files()   // get input files
-    get_mzmls()  // get wide windows mzmls
+    get_spectra_files(params.import_raw_directly)  // get spectra files, raw or mzmls
 
     // set up some convenience variables
     skyline_template_zipfile = get_input_files.out.skyline_template_zipfile
-    mzml_ch = get_mzmls.out.mzml_ch
+    spectra_file_ch = get_spectra_files.out.spectra_file_ch
     skyr_file_ch = get_input_files.out.skyr_files
 
-    // create Skyline document
-    if(skyline_template_zipfile != null) {
-        skyline_import(
-            skyline_template_zipfile,
-            mzml_ch
-        )
+    // if the user is using/generating mzmls, make sure they
+    // can be uploaded to PanoramaWeb if requested
+    if(params.import_raw_directly) {
+        mzml_file_ch = Channel.empty()
+    } else {
+        mzml_file_ch = spectra_file_ch
     }
+
+    // create Skyline document
+    skyline_import(
+        skyline_template_zipfile,
+        spectra_file_ch
+    )
 
     final_skyline_file = skyline_import.out.skyline_results
 
@@ -58,7 +64,7 @@ workflow {
         panorama_upload_results(
             params.panorama.upload_url,
             final_skyline_file,
-            mzml_ch,
+            mzml_file_ch,
             run_details_file,
             config_file,
             skyr_file_ch,
