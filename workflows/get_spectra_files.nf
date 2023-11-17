@@ -3,10 +3,13 @@ include { PANORAMA_GET_RAW_FILE } from "../modules/panorama"
 include { PANORAMA_GET_RAW_FILE_LIST } from "../modules/panorama"
 include { MSCONVERT } from "../modules/msconvert"
 
-workflow get_mzmls {
+workflow get_spectra_files {
+
+    take:
+        import_raw_directly
 
    emit:
-       mzml_ch
+        spectra_file_ch
 
     main:
 
@@ -23,11 +26,15 @@ workflow get_mzmls {
             placeholder_ch = PANORAMA_GET_RAW_FILE_LIST.out.raw_file_placeholders.transpose()
             PANORAMA_GET_RAW_FILE(placeholder_ch)
             
-            mzml_ch = MSCONVERT(
-                PANORAMA_GET_RAW_FILE.out.panorama_file,
-                params.msconvert.do_demultiplex,
-                params.msconvert.do_simasspectra
-            )
+            if(import_raw_directly) {
+                spectra_file_ch = PANORAMA_GET_RAW_FILE.out.panorama_file
+            } else {
+                spectra_file_ch = MSCONVERT(
+                    PANORAMA_GET_RAW_FILE.out.panorama_file,
+                    params.msconvert.do_demultiplex,
+                    params.msconvert.do_simasspectra
+                )
+            }
 
         } else {
 
@@ -50,14 +57,22 @@ workflow get_mzmls {
                 error "Matched raw files and mzML files for: $spectra_dir/${file_glob}. Please choose a file matching string that will only match one or the other."
             }
 
-            if(mzml_files.size() > 0) {
-                    mzml_ch = Channel.fromList(mzml_files)
+            if(import_raw_directly && raw_files.size() < 1) {
+                error "`import_raw_directly` is set to `true`, but no raw files found for: $spectra_dir/${file_glob}"
+            }
+
+            if(import_raw_directly) {
+                spectra_file_ch = Channel.fromList(raw_files)
             } else {
-                mzml_ch = MSCONVERT(
-                    Channel.fromList(raw_files),
-                    params.msconvert.do_demultiplex,
-                    params.msconvert.do_simasspectra
-                )
+                if(mzml_files.size() > 0) {
+                        mzml_ch = Channel.fromList(mzml_files)
+                } else {
+                    mzml_ch = MSCONVERT(
+                        Channel.fromList(raw_files),
+                        params.msconvert.do_demultiplex,
+                        params.msconvert.do_simasspectra
+                    )
+                }
             }
         }
 }
