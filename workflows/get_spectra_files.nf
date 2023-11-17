@@ -65,9 +65,9 @@ workflow get_spectra_files {
                 spectra_file_ch = Channel.fromList(raw_files)
             } else {
                 if(mzml_files.size() > 0) {
-                        mzml_ch = Channel.fromList(mzml_files)
+                        spectra_file_ch = Channel.fromList(mzml_files)
                 } else {
-                    mzml_ch = MSCONVERT(
+                    spectra_file_ch = MSCONVERT(
                         Channel.fromList(raw_files),
                         params.msconvert.do_demultiplex,
                         params.msconvert.do_simasspectra
