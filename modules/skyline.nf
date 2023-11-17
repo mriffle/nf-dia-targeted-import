@@ -1,4 +1,4 @@
-process SKYLINE_IMPORT_MZML {
+process SKYLINE_IMPORT_SPECTRA {
     publishDir "${params.result_dir}/skyline/import-spectra", failOnError: true, mode: 'copy'
     label 'process_medium'
     label 'process_high_memory'
@@ -8,23 +8,23 @@ process SKYLINE_IMPORT_MZML {
 
     input:
         path skyline_zipfile
-        path mzml_file
+        path spectra_file
 
     output:
         path("*.skyd"), emit: skyd_file
-        path("${mzml_file.baseName}.log"), emit: log_file
+        path("${spectra_file.baseName}.log"), emit: log_file
 
     script:
     """
     unzip ${skyline_zipfile}
 
-    cp ${mzml_file} /tmp/${mzml_file}
+    cp ${spectra_file} /tmp/${spectra_file}
 
     wine SkylineCmd \
         --in="${skyline_zipfile.baseName}" \
         --import-no-join \
-        --log-file="${mzml_file.baseName}.log" \
-        --import-file="/tmp/${mzml_file}" \
+        --log-file="${spectra_file.baseName}.log" \
+        --import-file="/tmp/${spectra_file}" \
     """
 }
 
