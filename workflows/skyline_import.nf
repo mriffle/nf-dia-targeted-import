@@ -20,7 +20,7 @@ workflow skyline_import {
         SKYLINE_MERGE_RESULTS(
             skyline_template_zipfile,
             SKYLINE_IMPORT_SPECTRA.out.skyd_file.collect(),
-            mzml_file_ch.collect()
+            spectra_file_ch.collect()
         )
 
         skyline_results = SKYLINE_MERGE_RESULTS.out.final_skyline_zipfile
