@@ -4,7 +4,7 @@ process SKYLINE_IMPORT_SPECTRA {
     label 'process_high_memory'
     label 'process_short'
     label 'error_retry'
-    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.23187-2243781'
+    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.24054-2352758'
 
     input:
         path skyline_zipfile
@@ -32,7 +32,7 @@ process SKYLINE_MERGE_RESULTS {
     publishDir "${params.result_dir}/skyline/import-spectra", failOnError: true, mode: 'copy'
     label 'process_high'
     label 'error_retry'
-    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.23187-2243781'
+    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.24054-2352758'
 
     input:
         path skyline_zipfile
@@ -63,7 +63,7 @@ process SKYLINE_RUN_REPORTS {
     publishDir "${params.result_dir}/skyline/reports", failOnError: true, mode: 'copy'
     label 'process_high'
     label 'error_retry'
-    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.23187-2243781'
+    container 'quay.io/protio/pwiz-skyline-i-agree-to-the-vendor-licenses:3.0.24054-2352758'
 
     input:
         path skyline_zipfile
