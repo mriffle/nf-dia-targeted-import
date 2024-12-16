@@ -77,6 +77,9 @@ The ``params`` Section
    * - 
      - ``msconvert.do_simasspectra``
      - If starting with raw files, this is the value used by ``msconvert`` for the ``do_simasspectra`` parameter. Default: ``true``.
+   * -
+     - ``panorama.domain``
+     - The domain for which the PANORAMA_API_KEY will be used when making HTTP requests. Default: ``https://panoramaweb.org``
    * - 
      - ``panorama.upload``
      - Whether or not to upload results to PanoramaWeb Default: ``false``.
